@@ -2,15 +2,12 @@ const db = require("../models/index");
 
 const getHomepage = async (req, res) => {
   try {
-    const studentList = await db.Student.findAll();
-    return res.send("aaa");
+    let data = await db.User.findAll();
+    console.log(data);
+    return res.render("sample", { data: JSON.stringify(data) });
   } catch (error) {
     console.log(error);
   }
 };
 
-const test = (req, res) => {
-  res.render("sample");
-};
-
-module.exports = { getHomepage, test };
+module.exports = { getHomepage };
