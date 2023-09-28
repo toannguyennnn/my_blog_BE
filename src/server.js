@@ -6,6 +6,7 @@ const webRoutes = require("./routes/web");
 const initAPIRoute = require("./routes/api");
 const bodyParser = require("body-parser");
 const connectDB = require("./config/database");
+const cors = require("cors");
 
 const app = express();
 
@@ -22,6 +23,8 @@ app.use(
     extended: true,
   })
 );
+
+app.use(cors());
 
 //routes
 app.use("/", webRoutes);

@@ -1,7 +1,7 @@
 const userService = require("../service/userService");
 
 let getUser = async (req, res) => {
-  let id = req.query.id;
+  let id = req.params.id;
   if (!id) {
     return res.status(200).json({
       errCode: 1,
@@ -20,12 +20,23 @@ let getUser = async (req, res) => {
 let createUser = async (req, res) => {
   let message = await userService.createUser(req.body);
   return res.status(200).json({
-    message
+    message,
   });
 };
 
-const updateUser = async (req, res) => {};
+const updateUser = async (req, res) => {
+  let message = await userService.updateUser(req.params.id, req.body);
+  return res.status(200).json({
+    message,
+  });
+};
 
-const deleteUser = async (req, res) => {};
+const deleteUser = async (req, res) => {
+  let id = req.params.id;
+  let message = await userService.deleteUser(id);
+  return res.status(200).json({
+    message,
+  });
+};
 
 module.exports = { getUser, createUser, updateUser, deleteUser };

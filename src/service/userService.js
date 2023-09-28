@@ -97,4 +97,58 @@ let createUser = async (userData) => {
   });
 };
 
-module.exports = { getUser, createUser };
+let updateUser = (userId, userData) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (userId) {
+        await db.User.update(
+          {
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            email: userData.email,
+            phonenumber: userData.phonenumber,
+            address: userData.address,
+            gender: userData.gender,
+            roleId: userData.roleId,
+          },
+          {
+            where: {
+              id: userId,
+            },
+          }
+        );
+        resolve({ errCode: 0, message: "Update user successfully!" });
+      } else {
+        resolve({
+          errCode: 2,
+          errMessage: "Missing required parameters!",
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+let deleteUser = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (userId) {
+        await db.User.destroy({
+          where: {
+            id: userId,
+          },
+        });
+        resolve({ errCode: 0, message: "Delete user successfully!" });
+      } else {
+        resolve({
+          errCode: 2,
+          errMessage: "Missing required parameters!",
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+module.exports = { getUser, createUser, updateUser, deleteUser };
