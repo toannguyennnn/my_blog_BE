@@ -12,6 +12,11 @@ module.exports = {
       title: {
         type: Sequelize.STRING
       },
+      description: {
+        type: Sequelize.STRING
+      },category: {
+        type: Sequelize.TEXT('long')
+      },
       content: {
         type: Sequelize.STRING
       },

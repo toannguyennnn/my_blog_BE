@@ -2,9 +2,12 @@ const db = require("../models/index");
 
 const getHomepage = async (req, res) => {
   try {
-    let data = await db.User.findAll();
-    console.log(data);
-    return res.render("sample", { data: JSON.stringify(data) });
+    let userData = await db.User.findAll();
+    let blogData = await db.Blog.findAll();
+    return res.render("sample", {
+      userData: JSON.stringify(userData),
+      blogData: JSON.stringify(blogData),
+    });
   } catch (error) {
     console.log(error);
   }
