@@ -17,12 +17,12 @@ let getBlog = async (req, res) => {
   });
 };
 
-// let createUser = async (req, res) => {
-//   let message = await userService.createUser(req.body);
-//   return res.status(200).json({
-//     message,
-//   });
-// };
+let createBlog = async (req, res) => {
+  let message = await blogService.createBlog(req.body);
+  return res.status(200).json({
+    message,
+  });
+};
 
 // const updateUser = async (req, res) => {
 //   let message = await userService.updateUser(req.params.id, req.body);
@@ -39,4 +39,4 @@ let getBlog = async (req, res) => {
 //   });
 // };
 
-module.exports = { getBlog };
+module.exports = { getBlog, createBlog };

@@ -19,47 +19,27 @@ let getBlog = (blogId) => {
   });
 };
 
-// let createUser = async (userData) => {
-//   return new Promise(async (resolve, reject) => {
-//     try {
-//       if (userData.email && userData.password) {
-//         let isExistedEmail = await checkUserEmail(userData.email);
-//         if (isExistedEmail) {
-//           resolve({
-//             errCode: 1,
-//             errMessage:
-//               "This email has already in used, plz try another email!",
-//           });
-//         }
-//         let hashUserPasswordFromBcrypt = await hashUserPassword(
-//           userData.password
-//         );
-//         await db.User.create({
-//           firstName: userData.firstName,
-//           lastName: userData.lastName,
-//           email: userData.email,
-//           password: hashUserPasswordFromBcrypt,
-//           phonenumber: userData.phonenumber,
-//           address: userData.address,
-//           gender: userData.gender,
-//           avatar: userData.avatar,
-//           roleId: userData.roleId,
-//         });
-//         resolve({
-//           errCode: 0,
-//           message: "Create new user successfully!",
-//         });
-//       } else {
-//         resolve({
-//           errCode: 2,
-//           errMessage: "Missing required parameters!",
-//         });
-//       }
-//     } catch (error) {
-//       reject(error);
-//     }
-//   });
-// };
+let createBlog = async (blogData) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await db.Blog.create({
+        title: blogData.title,
+        description: blogData.description,
+        category: blogData.category,
+        content: blogData.content,
+        author: blogData.author,
+        image: blogData.image,
+        userId: blogData.userId,
+      });
+      resolve({
+        errCode: 0,
+        message: "Create new blog successfully!",
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 
 // let updateUser = (userId, userData) => {
 //   return new Promise(async (resolve, reject) => {
@@ -115,4 +95,4 @@ let getBlog = (blogId) => {
 //     }
 //   });
 // };
-module.exports = { getBlog };
+module.exports = { getBlog, createBlog };

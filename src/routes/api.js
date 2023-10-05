@@ -13,6 +13,7 @@ const initAPIRoute = (app) => {
 
   // blog
   router.get("/blogs/:id", blogController.getBlog);
+  router.post("/create-blog", blogController.createBlog);
 
   return app.use("/api/v1/", router);
 };
