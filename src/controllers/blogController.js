@@ -31,12 +31,12 @@ let createBlog = async (req, res) => {
 //   });
 // };
 
-// const deleteUser = async (req, res) => {
-//   let id = req.params.id;
-//   let message = await userService.deleteUser(id);
-//   return res.status(200).json({
-//     message,
-//   });
-// };
+const deleteBlog = async (req, res) => {
+  let id = req.params.id;
+  let message = await blogService.deleteBlog(id);
+  return res.status(200).json({
+    message,
+  });
+};
 
-module.exports = { getBlog, createBlog };
+module.exports = { getBlog, createBlog, deleteBlog };

@@ -8,8 +8,8 @@ let getBlog = (blogId) => {
         blogs = await db.Blog.findAll();
       }
       if (blogId && blogId !== "all") {
-        users = await db.Blog.findOne({
-          where: { id: userId },
+        blogs = await db.Blog.findOne({
+          where: { id: blogId },
         });
       }
       resolve(blogs);
@@ -74,25 +74,25 @@ let createBlog = async (blogData) => {
 //   });
 // };
 
-// let deleteUser = (userId) => {
-//   return new Promise(async (resolve, reject) => {
-//     try {
-//       if (userId) {
-//         await db.User.destroy({
-//           where: {
-//             id: userId,
-//           },
-//         });
-//         resolve({ errCode: 0, message: "Delete user successfully!" });
-//       } else {
-//         resolve({
-//           errCode: 2,
-//           errMessage: "Missing required parameters!",
-//         });
-//       }
-//     } catch (error) {
-//       reject(error);
-//     }
-//   });
-// };
-module.exports = { getBlog, createBlog };
+let deleteBlog = (blogId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (blogId) {
+        await db.Blog.destroy({
+          where: {
+            id: blogId,
+          },
+        });
+        resolve({ errCode: 0, message: "Delete blog successfully!" });
+      } else {
+        resolve({
+          errCode: 2,
+          errMessage: "Missing required parameters!",
+        });
+      }
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+module.exports = { getBlog, createBlog, deleteBlog };

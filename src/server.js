@@ -7,6 +7,7 @@ const initAPIRoute = require("./routes/api");
 const bodyParser = require("body-parser");
 const connectDB = require("./config/database");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 
@@ -27,7 +28,14 @@ configViewEngine(app);
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 
-app.use(cors());
+app.use(cookieParser());
+
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  })
+);
 
 //routes
 app.use("/", webRoutes);
