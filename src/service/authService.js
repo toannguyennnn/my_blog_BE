@@ -1,75 +1,120 @@
-const { where } = require("sequelize");
+const { where, Op } = require("sequelize");
 const db = require("../models/index");
 const bcrypt = require("bcryptjs");
 const salt = bcrypt.genSaltSync(10);
 
-let checkUserEmail = (userEmail) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      let user = await db.User.findOne({
-        where: {
-          email: userEmail,
-        },
-      });
-      resolve(user);
-    } catch (error) {
-      reject(error);
-    }
-  });
+let checkUserEmail = async (userEmail) => {
+  try {
+    const user = await db.User.findOne({
+      where: {
+        email: userEmail,
+      },
+    });
+    return user;
+  } catch (error) {
+    throw error;
+  }
 };
 
 let hashUserPassword = (password) => {
-  return new Promise((resolve, reject) => {
-    try {
-      const hashPassword = bcrypt.hashSync(password, salt);
-      resolve(hashPassword);
-    } catch (error) {
-      reject(error);
-    }
-  });
+  try {
+    const hashPassword = bcrypt.hashSync(password, salt);
+    return hashPassword;
+  } catch (error) {
+    throw error;
+  }
 };
 
-let createUser = async (userData) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      if (userData.email && userData.password) {
-        let isExistedEmail = await checkUserEmail(userData.email);
-        if (isExistedEmail) {
-          resolve({
-            errCode: 1,
-            errMessage:
-              "This email has already in used, plz try another email!",
-          });
-        }
-        let hashUserPasswordFromBcrypt = await hashUserPassword(
-          userData.password
-        );
-        let newUser = await db.User.create({
-          firstName: userData.firstName,
-          lastName: userData.lastName,
-          email: userData.email,
-          password: hashUserPasswordFromBcrypt,
-          phonenumber: userData.phonenumber,
-          address: userData.address,
-          gender: userData.gender,
-          avatar: userData.avatar,
-          roleId: userData.roleId,
-        });
-        resolve({
+let checkUserPassword = (inputPassword, hashPassword) => {
+  return bcrypt.compareSync(inputPassword, hashPassword);
+};
+
+let signUp = async (userData) => {
+  try {
+    if (!userData.email || !userData.password) {
+      return {
+        errCode: 2,
+        errMessage: "Missing required parameters!",
+      };
+    }
+
+    let isExistedEmail = await checkUserEmail(userData.email);
+    if (isExistedEmail) {
+      return {
+        errCode: 1,
+        errMessage: "This email has already in used, plz try another email!",
+      };
+    }
+
+    const hashUserPasswordFromBcrypt = hashUserPassword(userData.password);
+
+    const newUser = await db.User.create({
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      email: userData.email,
+      password: hashUserPasswordFromBcrypt,
+      phonenumber: userData.phonenumber,
+      address: userData.address,
+      gender: userData.gender,
+      avatar: userData.avatar,
+      roleId: userData.roleId,
+    });
+    return {
+      errCode: 0,
+      message: "Create new user successfully!",
+      user: newUser.dataValues,
+    };
+  } catch (error) {
+    throw error;
+  }
+};
+
+let logIn = async (inputData) => {
+  try {
+    if (!inputData.email || !inputData.password) {
+      return {
+        errCode: 2,
+        errMessage: "Missing required parameters!",
+      };
+    }
+
+    let user = await db.User.findOne({
+      where: {
+        email: inputData.email,
+        // [Op.or]: [
+        //   { email: inputData.email },
+        //   { phonenumber: inputData.phonenumber },
+        // ],
+      },
+    });
+
+    if (user) {
+      let isCorrectPassword = checkUserPassword(
+        inputData.password,
+        user.dataValues.password
+      );
+
+      if (isCorrectPassword) {
+        return {
           errCode: 0,
-          message: "Create new user successfully!",
-          user: newUser.dataValues,
-        });
+          message: "User is authenticated...",
+          user: user,
+        };
       } else {
-        resolve({
-          errCode: 2,
-          errMessage: "Missing required parameters!",
-        });
+        return {
+          errCode: 1,
+          errMessage: "Email or password is incorect...",
+        };
       }
-    } catch (error) {
-      reject(error);
+    } else {
+      return {
+        errCode: 1,
+        errMessage: "Email or password is incorect!",
+      };
     }
-  });
+  } catch (error) {
+    throw error;
+  }
 };
 
-module.exports = { createUser };
+module.exports = { signUp, logIn };
