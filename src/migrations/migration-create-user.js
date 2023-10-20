@@ -9,31 +9,19 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      firstName: {
-        type: Sequelize.STRING,
-      },
-      lastName: {
+      fullname: {
         type: Sequelize.STRING,
       },
       email: {
         type: Sequelize.STRING,
       },
-      password: {
-        type: Sequelize.STRING,
-      },
       phonenumber: {
         type: Sequelize.STRING,
       },
-      address: {
+      password: {
         type: Sequelize.STRING,
       },
-      gender: {
-        type: Sequelize.BOOLEAN,
-      },
-      avatar: {
-        type: Sequelize.STRING,
-      },
-      roleId: {
+      userGroup_id: {
         type: Sequelize.INTEGER,
       },
       createdAt: {

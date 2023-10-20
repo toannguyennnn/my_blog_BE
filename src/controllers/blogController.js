@@ -1,6 +1,20 @@
 const blogService = require("../service/blogService");
+const db = require("../models/index");
 
 let getBlog = async (req, res) => {
+  // //test relationship model
+  // const test = await db.Blog.findAll({
+  //   // attributes: ["id", "fullname", "email", "phonenumber"],
+  //   include: {
+  //     model: db.User,
+  //     where: { id: 1 },
+  //     // attributes: ["id", "name", "description"],
+  //   },
+  //   nest: true,
+  //   raw: true,
+  // });
+  // console.log(test);
+
   let id = req.params.id;
   if (!id) {
     return res.status(200).json({

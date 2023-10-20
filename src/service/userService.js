@@ -71,15 +71,11 @@ let createUser = async (userData) => {
           userData.password
         );
         await db.User.create({
-          firstName: userData.firstName,
-          lastName: userData.lastName,
+          fullname: userData.fullname,
           email: userData.email,
           password: hashUserPasswordFromBcrypt,
           phonenumber: userData.phonenumber,
-          address: userData.address,
-          gender: userData.gender,
-          avatar: userData.avatar,
-          roleId: userData.roleId,
+          userGroup_id: userData.userGroupId,
         });
         resolve({
           errCode: 0,
@@ -103,13 +99,10 @@ let updateUser = (userId, userData) => {
       if (userId) {
         await db.User.update(
           {
-            firstName: userData.firstName,
-            lastName: userData.lastName,
+            fullname: userData.fullname,
             email: userData.email,
             phonenumber: userData.phonenumber,
-            address: userData.address,
-            gender: userData.gender,
-            roleId: userData.roleId,
+            userGroup_id: userData.userGroupId,
           },
           {
             where: {

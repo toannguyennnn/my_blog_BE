@@ -27,9 +27,8 @@ let createBlog = async (blogData) => {
         description: blogData.description,
         category: blogData.category,
         content: blogData.content,
-        author: blogData.author,
         image: blogData.image,
-        userId: blogData.userId,
+        user_id: blogData.userId,
       });
       resolve({
         errCode: 0,

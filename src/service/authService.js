@@ -49,15 +49,11 @@ let signUp = async (userData) => {
     const hashUserPasswordFromBcrypt = hashUserPassword(userData.password);
 
     const newUser = await db.User.create({
-      firstName: userData.firstName,
-      lastName: userData.lastName,
+      fullname: userData.fullname,
       email: userData.email,
       password: hashUserPasswordFromBcrypt,
       phonenumber: userData.phonenumber,
-      address: userData.address,
-      gender: userData.gender,
-      avatar: userData.avatar,
-      roleId: userData.roleId,
+      userGroup_id: userData.userGroupId,
     });
     return {
       errCode: 0,
