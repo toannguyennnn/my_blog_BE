@@ -1,42 +1,71 @@
-const userService = require("../service/userService");
+const UserService = require("../service/userService");
 
-let getUser = async (req, res) => {
-  let id = req.params.id;
-  if (!id) {
+class UserController {
+  async getUser(req, res) {
+    const id = req.params.id;
+    if (!id) {
+      return res.status(200).json({
+        errCode: 1,
+        errMessage: "Missing required parameters",
+        users: [],
+      });
+    }
+
+    const getUserService = new UserService(id);
+
+    let users = await getUserService.getUser();
     return res.status(200).json({
-      errCode: 1,
-      errMessage: "Missing required parameters",
-      users: [],
+      errCode: 0,
+      message: "ok",
+      users,
     });
   }
-  let users = await userService.getUser(id);
-  return res.status(200).json({
-    errCode: 0,
-    message: "ok",
-    users: users,
-  });
-};
 
-let createUser = async (req, res) => {
-  let message = await userService.createUser(req.body);
-  return res.status(200).json({
-    message,
-  });
-};
+  async createUser(req, res) {
+    
+    const createUserService = new UserService(
+      req.body.id,
+      req.body.fullname,
+      req.body.email,
+      req.body.password,
+      req.body.phonenumber,
+      req.body.userGroup_id
+    );
 
-const updateUser = async (req, res) => {
-  let message = await userService.updateUser(req.params.id, req.body);
-  return res.status(200).json({
-    message,
-  });
-};
+    let data = await createUserService.createUser();
 
-const deleteUser = async (req, res) => {
-  let id = req.params.id;
-  let message = await userService.deleteUser(id);
-  return res.status(200).json({
-    message,
-  });
-};
+    return res.status(201).json({
+      data,
+    });
+  }
 
-module.exports = { getUser, createUser, updateUser, deleteUser };
+  async updateUser(req, res) {
+
+    const updateUserService = new UserService(
+      req.params.id,
+      req.body.fullname,
+      req.body.email,
+      req.body.password,
+      req.body.phonenumber,
+      req.body.userGroup_id
+    );
+
+    let data = await updateUserService.updateUser();
+
+    return res.status(200).json({
+      data,
+    });
+  }
+
+  async deleteUser(req, res) {
+    const id = req.params.id;
+    const deleteUserService = new UserService(id);
+
+    let data = await deleteUserService.deleteUser();
+    return res.status(200).json({
+      data,
+    });
+  }
+}
+
+module.exports = UserController;

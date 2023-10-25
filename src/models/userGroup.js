@@ -14,10 +14,10 @@ module.exports = (sequelize, DataTypes) => {
       });
       UserGroup.belongsToMany(
         models.Role,
-        { through: "UserGroup_Role" },
-        {
-          foreignKey: "userGroup_id",
-        }
+        { through: "UserGroup_Role"},
+        // {
+        //   foreignKey: "userGroup_id",
+        // }
       );
     }
   }

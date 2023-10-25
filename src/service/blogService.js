@@ -1,97 +1,188 @@
 const db = require("../models/index");
 
-let getBlog = (blogId) => {
-  return new Promise(async (resolve, reject) => {
+class BlogService {
+  constructor(id, title, description, category, content, image, user_id) {
+    this.id = id;
+    this.title = title;
+    this.description = description;
+    this.category = category;
+    this.content = content;
+    this.image = image;
+    this.user_id = user_id;
+  }
+
+  async getBlog() {
     try {
       let blogs = "";
-      if (blogId == "all") {
+      if (this.id == "all") {
         blogs = await db.Blog.findAll();
       }
-      if (blogId && blogId !== "all") {
+      if (this.id && this.id !== "all") {
         blogs = await db.Blog.findOne({
-          where: { id: blogId },
+          where: { id: this.id },
         });
       }
-      resolve(blogs);
+      return blogs;
     } catch (error) {
-      reject(error);
+      throw error;
     }
-  });
-};
+  }
 
-let createBlog = async (blogData) => {
-  return new Promise(async (resolve, reject) => {
+  async createBlog() {
     try {
       await db.Blog.create({
-        title: blogData.title,
-        description: blogData.description,
-        category: blogData.category,
-        content: blogData.content,
-        image: blogData.image,
-        user_id: blogData.userId,
+        title: this.title,
+        description: this.description,
+        category: this.category,
+        content: this.content,
+        image: this.image,
+        user_id: this.user_id,
       });
-      resolve({
+      return {
         errCode: 0,
         message: "Create new blog successfully!",
-      });
+      };
     } catch (error) {
-      reject(error);
+      throw error;
     }
-  });
-};
+  }
 
-// let updateUser = (userId, userData) => {
-//   return new Promise(async (resolve, reject) => {
-//     try {
-//       if (userId) {
-//         await db.User.update(
-//           {
-//             firstName: userData.firstName,
-//             lastName: userData.lastName,
-//             email: userData.email,
-//             phonenumber: userData.phonenumber,
-//             address: userData.address,
-//             gender: userData.gender,
-//             roleId: userData.roleId,
-//           },
-//           {
-//             where: {
-//               id: userId,
-//             },
-//           }
-//         );
-//         resolve({ errCode: 0, message: "Update user successfully!" });
-//       } else {
-//         resolve({
-//           errCode: 2,
-//           errMessage: "Missing required parameters!",
-//         });
-//       }
-//     } catch (error) {
-//       reject(error);
-//     }
-//   });
-// };
-
-let deleteBlog = (blogId) => {
-  return new Promise(async (resolve, reject) => {
+  async updateBlog() {
     try {
-      if (blogId) {
-        await db.Blog.destroy({
-          where: {
-            id: blogId,
+      if (this.id) {
+        await db.Blog.update(
+          {
+            title: this.title,
+            description: this.description,
+            category: this.category,
+            content: this.content,
+            image: this.image,
+            user_id: this.user_id,
           },
-        });
-        resolve({ errCode: 0, message: "Delete blog successfully!" });
+          {
+            where: {
+              id: this.id,
+            },
+          }
+        );
+        return { errCode: 0, message: "Update blog successfully!" };
       } else {
-        resolve({
+        return {
           errCode: 2,
           errMessage: "Missing required parameters!",
-        });
+        };
       }
     } catch (error) {
-      reject(error);
+      throw error;
     }
-  });
-};
-module.exports = { getBlog, createBlog, deleteBlog };
+  }
+
+  async deleteBlog() {
+    try {
+      if (this.id) {
+        await db.Blog.destroy({
+          where: {
+            id: this.id,
+          },
+        });
+        return { errCode: 0, message: "Delete blog successfully!" };
+      } else {
+        return {
+          errCode: 2,
+          errMessage: "Missing required parameters!",
+        };
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+}
+
+module.exports = BlogService;
+
+// let getBlog = async (blogId) => {
+//   try {
+//     let blogs = "";
+//     if (blogId == "all") {
+//       blogs = await db.Blog.findAll();
+//     }
+//     if (blogId && blogId !== "all") {
+//       blogs = await db.Blog.findOne({
+//         where: { id: blogId },
+//       });
+//     }
+//     return blogs;
+//   } catch (error) {
+//     throw error;
+//   }
+// };
+
+// let createBlog = async (blogData) => {
+//   try {
+//     await db.Blog.create({
+//       title: blogData.title,
+//       description: blogData.description,
+//       category: blogData.category,
+//       content: blogData.content,
+//       image: blogData.image,
+//       user_id: blogData.user_id,
+//     });
+//     return {
+//       errCode: 0,
+//       message: "Create new blog successfully!",
+//     };
+//   } catch (error) {
+//     throw error;
+//   }
+// };
+
+// let updateBlog = async (blogId, blogData) => {
+//   try {
+//     if (blogId) {
+//       await db.Blog.update(
+//         {
+//           title: blogData.title,
+//           description: blogData.description,
+//           category: blogData.category,
+//           content: blogData.content,
+//           image: blogData.image,
+//           user_id: blogData.user_id,
+//         },
+//         {
+//           where: {
+//             id: blogId,
+//           },
+//         }
+//       );
+//       return { errCode: 0, message: "Update blog successfully!" };
+//     } else {
+//       return {
+//         errCode: 2,
+//         errMessage: "Missing required parameters!",
+//       };
+//     }
+//   } catch (error) {
+//     throw error;
+//   }
+// };
+
+// let deleteBlog = async (blogId) => {
+//   try {
+//     if (blogId) {
+//       await db.Blog.destroy({
+//         where: {
+//           id: blogId,
+//         },
+//       });
+//       return { errCode: 0, message: "Delete blog successfully!" };
+//     } else {
+//       return {
+//         errCode: 2,
+//         errMessage: "Missing required parameters!",
+//       };
+//     }
+//   } catch (error) {
+//     throw error;
+//   }
+// };
+// module.exports = { getBlog, createBlog, deleteBlog, updateBlog };

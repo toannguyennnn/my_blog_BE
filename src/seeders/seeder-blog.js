@@ -41,7 +41,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        title: "Blog 4",
+        title: "Blog 5",
         description:
           "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem, laboriosam?",
         category: "category 2",

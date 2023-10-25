@@ -3,145 +3,145 @@ const db = require("../models/index");
 const bcrypt = require("bcryptjs");
 const salt = bcrypt.genSaltSync(10);
 
-let checkUserEmail = (userEmail) => {
-  return new Promise(async (resolve, reject) => {
+class UserService {
+  constructor(id, fullname, email, password, phonenumber, userGroup_id) {
+    this.id = id;
+    this.fullname = fullname;
+    this.email = email;
+    this.password = password;
+    this.phonenumber = phonenumber;
+    this.userGroup_id = userGroup_id;
+  }
+
+  async checkUserEmail() {
     try {
       let user = await db.User.findOne({
         where: {
-          email: userEmail,
+          email: this.email,
         },
       });
-      resolve(user);
+      return user;
     } catch (error) {
-      reject(error);
+      throw error;
     }
-  });
-};
+  }
 
-let hashUserPassword = (password) => {
-  return new Promise((resolve, reject) => {
+  hashUserPassword() {
     try {
-      const hashPassword = bcrypt.hashSync(password, salt);
-      resolve(hashPassword);
+      const hashPassword = bcrypt.hashSync(this.password, salt);
+      return hashPassword;
     } catch (error) {
-      reject(error);
+      throw error;
     }
-  });
-};
+  }
 
-let getUser = (userId) => {
-  return new Promise(async (resolve, reject) => {
+  async getUser() {
     try {
       let users = "";
-      if (userId == "all") {
+      if (this.id == "all") {
         users = await db.User.findAll({
           attributes: {
             exclude: ["password"],
           },
         });
       }
-      if (userId && userId !== "all") {
+      if (this.id && this.id !== "all") {
         users = await db.User.findOne({
-          where: { id: userId },
+          where: { id: this.id },
           attributes: {
             exclude: ["password"],
           },
         });
       }
-      resolve(users);
+      return users;
     } catch (error) {
-      reject(error);
+      throw error;
     }
-  });
-};
+  }
 
-let createUser = async (userData) => {
-  return new Promise(async (resolve, reject) => {
+  async createUser() {
     try {
-      if (userData.email && userData.password) {
-        let isExistedEmail = await checkUserEmail(userData.email);
-        if (isExistedEmail) {
-          resolve({
-            errCode: 1,
-            errMessage:
-              "This email has already in used, plz try another email!",
-          });
-        }
-        let hashUserPasswordFromBcrypt = await hashUserPassword(
-          userData.password
-        );
-        await db.User.create({
-          fullname: userData.fullname,
-          email: userData.email,
-          password: hashUserPasswordFromBcrypt,
-          phonenumber: userData.phonenumber,
-          userGroup_id: userData.userGroupId,
-        });
-        resolve({
-          errCode: 0,
-          message: "Create new user successfully!",
-        });
-      } else {
-        resolve({
+      if (!this.email || !this.password) {
+        return {
           errCode: 2,
           errMessage: "Missing required parameters!",
-        });
+        };
       }
-    } catch (error) {
-      reject(error);
-    }
-  });
-};
 
-let updateUser = (userId, userData) => {
-  return new Promise(async (resolve, reject) => {
+      let isExistedEmail = await this.checkUserEmail();
+      if (isExistedEmail) {
+        return {
+          errCode: 1,
+          errMessage: "This email has already in used, plz try another email!",
+        };
+      }
+
+      const hashUserPasswordFromBcrypt = this.hashUserPassword();
+
+      const newUser = await db.User.create({
+        fullname: this.fullname,
+        email: this.email,
+        password: hashUserPasswordFromBcrypt,
+        phonenumber: this.phonenumber,
+        userGroup_id: this.userGroup_id || 2, // default userGroup: member
+      });
+      return {
+        errCode: 0,
+        message: "Create new user successfully!",
+        user: newUser.dataValues,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateUser() {
     try {
-      if (userId) {
+      if (this.id) {
         await db.User.update(
           {
-            fullname: userData.fullname,
-            email: userData.email,
-            phonenumber: userData.phonenumber,
-            userGroup_id: userData.userGroupId,
+            fullname: this.fullname,
+            email: this.email,
+            phonenumber: this.phonenumber,
+            userGroup_id: this.userGroup_id,
           },
           {
             where: {
-              id: userId,
+              id: this.id,
             },
           }
         );
-        resolve({ errCode: 0, message: "Update user successfully!" });
+        return { errCode: 0, message: "Update user successfully!" };
       } else {
-        resolve({
+        return {
           errCode: 2,
           errMessage: "Missing required parameters!",
-        });
+        };
       }
     } catch (error) {
-      reject(error);
+      throw error;
     }
-  });
-};
+  }
 
-let deleteUser = (userId) => {
-  return new Promise(async (resolve, reject) => {
+  async deleteUser() {
     try {
-      if (userId) {
+      if (this.id) {
         await db.User.destroy({
           where: {
-            id: userId,
+            id: this.id,
           },
         });
-        resolve({ errCode: 0, message: "Delete user successfully!" });
+        return { errCode: 0, message: "Delete user successfully!" };
       } else {
-        resolve({
+        return {
           errCode: 2,
           errMessage: "Missing required parameters!",
-        });
+        };
       }
     } catch (error) {
-      reject(error);
+      throw error;
     }
-  });
-};
-module.exports = { getUser, createUser, updateUser, deleteUser };
+  }
+}
+
+module.exports = UserService;

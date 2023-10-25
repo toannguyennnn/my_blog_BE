@@ -7,7 +7,6 @@ const initAPIRoute = require("./routes/api");
 const bodyParser = require("body-parser");
 const connectDB = require("./config/database");
 const cors = require("cors");
-const cookieParser = require("cookie-parser");
 
 const app = express();
 
@@ -18,17 +17,8 @@ const hostname = process.env.HOST_NAME;
 configViewEngine(app);
 
 // Register the bodyParser middleware here
-// app.use(bodyParser.json());
-// app.use(
-//   bodyParser.urlencoded({
-//     extended: true,
-//   })
-// );
-
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
-
-app.use(cookieParser());
 
 app.use(
   cors({
