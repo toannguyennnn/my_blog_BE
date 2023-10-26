@@ -13,8 +13,19 @@ class BlogController {
 
     const getBlogService = new BlogService(id);
 
-    let blogs = await getBlogService.getBlog();
+    if (id === "all" && req.query.page && req.query.limit) {
+      const page = req.query.page;
+      const limit = req.query.limit;
+      const data = await getBlogService.getBlogWithPagination(+page, +limit);
 
+      return res.status(200).json({
+        errCode: 0,
+        message: "ok",
+        data,
+      });
+    }
+
+    let blogs = await getBlogService.getBlog();
     return res.status(200).json({
       errCode: 0,
       message: "ok",

@@ -28,6 +28,27 @@ class BlogService {
     }
   }
 
+  async getBlogWithPagination(page, limit) {
+    try {
+      let offset = (page - 1) * limit;
+      const { count, rows } = await db.Blog.findAndCountAll({
+        offset: offset,
+        limit: limit,
+      });
+
+      let totalPages = Math.ceil(count / limit);
+      let data = {
+        totalRows: count,
+        totalPages: totalPages,
+        blogs: rows,
+      };
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async createBlog() {
     try {
       await db.Blog.create({
