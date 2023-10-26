@@ -12,11 +12,11 @@ const authMiddleware = new AuthMiddleware();
 const router = express.Router();
 
 const initAPIRoute = (app) => {
-  router.all(
-    "*",
-    authMiddleware.requireAuth.bind(authMiddleware),
-    authMiddleware.requirePermission.bind(authMiddleware)
-  );
+  // router.all(
+  //   "*",
+  //   authMiddleware.requireAuth.bind(authMiddleware),
+  //   authMiddleware.requirePermission.bind(authMiddleware)
+  // );
 
   // authorization
   router.post("/sign-up", authController.signUp);

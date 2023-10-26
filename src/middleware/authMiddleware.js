@@ -83,9 +83,16 @@ class AuthMiddleware {
       roles.forEach((role) => {
         const url = role.url;
         const path = url.split("/")[1];
-        const regexPattern = new RegExp(`^\/${path}\/\\d+$`);
-        if (regexPattern.test(currentUrl)) {
-          hasPermission = true; 
+        const param = url.split("/")[2];
+        if (param === "all") {
+          if (url === currentUrl) {
+            hasPermission = true;
+          }
+        } else {
+          const regexPattern = new RegExp(`^\/${path}\/\\d+$`);
+          if (regexPattern.test(currentUrl)) {
+            hasPermission = true;
+          }
         }
       });
 

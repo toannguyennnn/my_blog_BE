@@ -59,6 +59,27 @@ class UserService {
     }
   }
 
+  async getUserWithPagination(page, limit) {
+    try {
+      let offset = (page - 1) * limit;
+      const { count, rows } = await db.User.findAndCountAll({
+        offset: offset,
+        limit: limit,
+      });
+
+      let totalPages = Math.ceil(count / limit);
+      let data = {
+        totalRows: count,
+        totalPages: totalPages,
+        users: rows,
+      };
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async createUser() {
     try {
       if (!this.email || !this.password) {

@@ -13,16 +13,27 @@ class UserController {
 
     const getUserService = new UserService(id);
 
-    let users = await getUserService.getUser();
+    if (id === "all" && req.query.page && req.query.limit) {
+      const page = req.query.page;
+      const limit = req.query.limit;
+      const data = await getUserService.getUserWithPagination(+page, +limit);
+
+      return res.status(200).json({
+        errCode: 0,
+        message: "ok",
+        data,
+      });
+    } 
+
+    let data = await getUserService.getUser();
     return res.status(200).json({
       errCode: 0,
       message: "ok",
-      users,
+      data,
     });
   }
 
   async createUser(req, res) {
-    
     const createUserService = new UserService(
       req.body.id,
       req.body.fullname,
@@ -40,7 +51,6 @@ class UserController {
   }
 
   async updateUser(req, res) {
-
     const updateUserService = new UserService(
       req.params.id,
       req.body.fullname,
