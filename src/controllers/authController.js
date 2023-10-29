@@ -28,7 +28,7 @@ class AuthController {
       var token = authMiddleware.createToken(payload);
     }
 
-    return res.status(200).json({
+    return res.status(201).json({
       data,
       token,
     });
